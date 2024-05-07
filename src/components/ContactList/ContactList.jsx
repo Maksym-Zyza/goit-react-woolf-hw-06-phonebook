@@ -1,13 +1,30 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteContact } from 'store/contacts/slice';
 
-export const ContactList = ({ contacts, deleteContact }) => {
+export const ContactList = () => {
+  const { contacts } = useSelector(state => state.contacts);
+  const { filter } = useSelector(state => state.filter);
+
+  const dispatch = useDispatch();
+
+  const filteredContacts = () => {
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
+  };
+
+  const deleteContactById = id => {
+    dispatch(deleteContact(id));
+  };
+
   return (
     <ul>
-      {contacts.map(contact => (
+      {filteredContacts().map(contact => (
         <li key={contact.id}>
           {`${contact.name}: ${contact.number}`}
 
-          <button onClick={() => deleteContact(contact.id)}>Delete</button>
+          <button onClick={() => deleteContactById(contact.id)}>Delete</button>
         </li>
       ))}
     </ul>
